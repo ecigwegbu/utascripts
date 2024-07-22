@@ -29,7 +29,7 @@ cd /home/student/container-storage-and-networks
 
 # Make sure that there is a line that says 'network_backend = "netavark"' in the file:
 # /usr/share/containers/containers.conf. This is to avoid 'aardvark'
-# network non-compatibility issues; see page 3351 in the Student Guide
+# network non-compatibility issues; see page 351 in the Student Guide
 # network_backend = "netavark"
 sudo sed -i.bak '/network_backend = /c\network_backend = "netavark"' \
   /usr/share/containers/containers.conf
@@ -57,7 +57,7 @@ podman unshare chown 27:27 /home/student/container-storage-and-networks/database
 echo '2.3 ************ Create Client Container *****************'
 # Create the client container db_client
 # Note: do not mount the /etc/yum.repos.d directory as suggested by the Student Guide
-# That mounts your VMs repo into the container, and it is incompaible with this image
+# That mounts your VMs repo into the container, and it is incompatible with this image
 # So skip '-v /etc/yum.repos.d:/etc/yum.repos.d'
 podman run -d --name db_client --network=frontend registry.redhat.io/ubi9/ubi sleep infinity
 podman ps
@@ -82,7 +82,7 @@ echo '4.6. ********** Connect from Client container to Database container ******
 # database's container's name, because
 # DNS resolution works in the netavark network they share;
 # The correct port to use is port 3306 (and not the host port 13306) because the client and
-# container are in the same subnet.
+# database are in the same subnet.
 # But the port is skipped here because it is the default port for MariaDB and
 # is not required here (--port=3306)
 podman exec -it db_client mysql -u dev1 -p${MYSQL_PWD} -h db_01 -e " \
