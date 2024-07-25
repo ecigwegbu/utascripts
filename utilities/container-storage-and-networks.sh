@@ -1,7 +1,7 @@
 #!/bin/bash
 # container-storage-and-networks.sh
 
-# Guided Exercise 2: Manage Container Storage and Network Resources
+# Guided Exercise: Manage Container Storage and Network Resources
 # Student Guide Notes and Commands
 # You should practice by running these commands one by one on your terminal
 # ... they help you follow or understand the steps in the student guide.
@@ -13,15 +13,22 @@
 # Approximate reference to the Guided Exercise text is included as comments (eg #5.0.).
 
 echo '*************** Preparation ***************'
-# **** First, Manually login to registry.redhat.io; then
+# **** First, Manually login to registry.redhat.io. We CHECK it before we proceed:
+if ! [[ $(podman login --get-login registry.redhat.io) ]]; then
+  echo "Please login to registry.redhat.io first."
+  echo exiting...
+  exit 1
+fi
 # make sure to export the db_01 password for dev1 user as an env variable****
 
 export MYSQL_PWD=devpass
 
-# To avoid problems, remove previous 'exercise' containers and the networks
+# To avoid problems, remove (tear down) previous 'exercise' containers and the networks
 (podman stop db_01 db_client) 2>/dev/null
 (podman rm db_01 db_client) 2>/dev/null
 (podman network rm frontend backend) 2>/dev/null
+sudo kill -9 $(lsof -i :13306 | grep 13306 | cut -f2 -d' ') 2>/dev/null
+sudo rm -rf /home/student/container-storage-and-networks/databases
 
 # Create a directory for the project and cd into it
 mkdir -p /home/student/container-storage-and-networks
@@ -101,8 +108,8 @@ sudo firewall-cmd --reload
 # 4.8.
 echo '4.8. ********** Demonstrate access to container from OUTSIDE of host ******'
 # Demonstrate access to the same database container but from outside it's subnet,
-# ie go through the VM hosts LAN IP (eg 192.168.56.20)
-# This will require using the hosts port 13306 as well. For this to work your VM must either be
+# ie go through the host VM's LAN IP (eg 192.168.56.20)
+# This will require using the host's port 13306 as well. For this to work your VM must either be
 # on a 'bridge' network with the Windows host PC, or you have done a port forward from Windows
 # to your VM in your hypervisor (eg VirtualBox forward 13306 to 13306 for this VM).
 podman exec -it db_client mysql -u dev1 -p${MYSQL_PWD} -h 192.168.56.20 --port=13306 -e " \
@@ -133,10 +140,10 @@ podman inspect db_client
 podman exec -it db_client dnf install -y iputils
 podman exec -it db_client ping -c4 db_01  # ping 4 times only
 
-echo '******** FINISHED. Now you can play with MariaDB. Type CTRL/D to quit ******'
+echo -e "******** FINISHED. Now you can play with MariaDB. Type CTRL/D to quit ******\n"
 # FINISHED. You can manually play with your brand new MariaDB database by connecting to it
 # from your db_client and interacting from the MariaDB command line (REPL);
-# to exit MariaDB enter quit or CTRL/D:
+# to exit MariaDB enter quit or type CTRL/D:
 podman exec -it db_client mysql -u dev1 -p${MYSQL_PWD} -h db_01
 
 # When done you can clean up, by running the following commands manually:
@@ -144,8 +151,9 @@ podman exec -it db_client mysql -u dev1 -p${MYSQL_PWD} -h db_01
 # (podman stop db_01 db_client) 2>/dev/null
 # (podman rm db_01 db_client) 2>/dev/null
 # (podman network rm frontend backend) 2>/dev/null
-# sudo rm databases 2>/dev/null
+# sudo kill -9 $(lsof -i :13306 | grep 13306 | cut -f2 -d' ') 2>/dev/null
+# sudo rm -rf /home/student/container-storage-and-networks/databases 2>/dev/null`
 # unset MYSQL_PWD 2>/dev/null
 #
-echo 'Enquiries? Use Group Chat or dm Elias Igwegbu <igwegbu@gmail.com>'
+echo -e '\nEnquiries? Use Group Chat or dm Elias Igwegbu <igwegbu@gmail.com>'
 echo '(c) 2024. Unix Training Academy. All Rights Reserved'
