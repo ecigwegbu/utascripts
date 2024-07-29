@@ -12,11 +12,6 @@
 
 # Preparation
 echo '********* PREPARATION *************'
-# **** First, Manually login to registry.redhat.io; then verify it *****
-podman login --get-login registry.redhat.io
-# Clear leftover from previous attempts
-systemctl --user disable --now container-webapp 2>/dev/null
-(podman stop webapp && podman rm webapp) 2>/dev/null
 
 # 2.
 echo '2. **Create a user account with which to run the Systemd user service ***'
@@ -58,9 +53,12 @@ echo '5. ********* Create the Container that will become the web server  *******
 systemctl --user disable --now container-webapp 2>/dev/null
 (podman stop webapp && podman rm webapp) 2>/dev/null
 
-# Create the container, but first you must register with Red Hat
-# podman login registry.redhat.io --username ecigwegbu --password n11Tone1
-echo n11Tone1 | podman login registry.redhat.io --username ecigwegbu --password-stdin
+# Create the container, but first you must register with Red Hat container registry
+# Note: export the RHSM_PASS and RHSM_USER from your terminal before proceeding eg:
+# You can also add this to ~/.bashrc and source ~/.bashrc to make it permanent for this user
+# export RHSM_USER=my-red-hat-user-name
+# export RHSM_PASS=my-red-hat-password
+echo ${RHSM_PASS} | podman login registry.redhat.io --username ${RHSM_USER} --password-stdin
 
 # Note that if you omit the html subdirectory in one path, 
 # you must be consistent for both paths
@@ -81,8 +79,9 @@ echo '5.3 ********** Verify that the website is live  ***********'
 # This does not require port mappping or firewall opening as the port is on the container
 
 # Add delay before running curl
-echo -e "\nCURLING Website..." && sleep 2
+echo -e "\nCURLING Website...the one started manually by running the podman command" && sleep 2
 curl -s http://localhost:8080   # or curl 127.0.0.1:8080
+echo
 
 # Now this one requires firewall openening of port 8080, if you want access from outside the
 # VM hosting the container, ie if you use the VM's LAN ip address
@@ -125,8 +124,9 @@ podman ps
 echo '7.3 ******** Try to view the web page again, started by Systemd *******'
 # Try to view the web page, as before
 # Add delay before running curl
-echo -e "\nCURLING Website..." && sleep 2
+echo -e "\nCURLING Website...the one started by Systemd" && sleep 2
 curl -s http://localhost:8080
+echo
 
 # Stop the web service (and the container) using Systemd
 systemctl --user stop container-webapp

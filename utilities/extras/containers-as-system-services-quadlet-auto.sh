@@ -12,16 +12,6 @@
 
 # Preparation
 echo '********* PREPARATION *************'
-# **** First, Manually login to registry.redhat.io. We CHECK it before we proceed:
-if ! [[ $(podman login --get-login registry.redhat.io) ]]; then
-  echo "Please login to registry.redhat.io first."
-  echo exiting...
-  exit 1
-fi
-
-# Clear leftover from previous attempts
-systemctl --user disable --now container-webapp 2>/dev/null
-(podman stop webapp && podman rm webapp) 2>/dev/null
 
 # 2.
 echo '2. **Create a user account with which to run the Systemd user service ***'
@@ -40,8 +30,7 @@ sshpass -p redhat ssh -Tqo StrictHostKeyChecking=no -o PasswordAuthentication=ye
 whoami
 # podman info
 
-# 3.
-echo '3. ***** Configure the podman registries in your own home directory ***********'
+# 3.echo '3. ***** Configure the podman registries in your own home directory ***********'
 mkdir -p ~/.config/containers/
 cp /etc/containers/registries.conf ~/.config/containers
 
@@ -50,7 +39,7 @@ echo '4. ***** Create a directory for storing the website content in your VM ***
 mkdir -p ~/webcontent/html/
 
 # Create the index file in this directory, ie buildyour website !
-echo "Hello World" > ~/webcontent/html/index.html
+echo "Welcome to UTA" > ~/webcontent/html/index.html
 
 # Ensure 'others' have read permission on the index file. 
 # Note that that also means execute permission on the folder containing it!!
@@ -63,9 +52,19 @@ echo '5. ********* Create the Container that will become the web server  *******
 systemctl --user disable --now container-webapp 2>/dev/null
 (podman stop webapp && podman rm webapp) 2>/dev/null
 
-# Create the container, but first you must register with Red Hat
-# podman login registry.redhat.io --username ecigwegbu --password n11Tone1
-echo n11Tone1 | podman login registry.redhat.io --username ecigwegbu --password-stdin
+# Create the container, but first you must register with Red Hat container registry
+# Note: export the RHSM_PASS and RHSM_USER from your terminal before proceeding eg:
+# You can also add this to ~/.bashrc and source ~/.bashrc to make it permanent for this user
+# export RHSM_USER=my-red-hat-user-name
+# export RHSM_PASS=my-red-hat-password
+# As a precaution, we will exit now if you have not logged in or set these variables:
+if ! podman login --get-login registry.redhat.io &> /dev/null && \
+   ([[ -z ${RHSM_USER} ]] || [[ -z ${RHSM_PASS} ]]); then
+    echo -e "Please login to registry.redhat.io\nor export login credentials RHSM_USER and RHSM_PASS before running this script, so I can login for you :)\n"
+    echo 'Exiting...'
+    exit 2  # Missing Registry login
+fi
+echo ${RHSM_PASS} | podman login registry.redhat.io --username ${RHSM_USER} --password-stdin
 
 # Note that if you omit the html subdirectory in one path, 
 # you must be consistent for both paths
@@ -86,8 +85,9 @@ echo '5.3 ********** Verify that the website is live  ***********'
 # This does not require port mappping or firewall opening as the port is on the container
 
 # Add delay before running curl
-echo -e "\nCURLING Website..." && sleep 2
+echo -e "\nCURLING Website...the one started manually by running the podman command" && sleep 2
 curl -s http://localhost:8080   # or curl 127.0.0.1:8080
+echo
 
 # Now this one requires firewall openening of port 8080, if you want access from outside the
 # VM hosting the container, ie if you use the VM's LAN ip address
@@ -138,8 +138,9 @@ podman ps
 echo '7.3 ******** Try to view the web page again, started by Systemd *******'
 # Try to view the web page, as before
 # Add delay before running curl
-echo -e "\nCURLING Website..." && sleep 2
+echo -e "\nCURLING Website...the one started by Systemd" && sleep 2
 curl -s http://localhost:8080
+echo
 
 # Stop the web service (and the container) using Systemd
 systemctl --user stop container-webapp
