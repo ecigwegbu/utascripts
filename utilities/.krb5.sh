@@ -16,12 +16,13 @@ IGWEGBU.TECH = {
  .igwegbu.tech = IGWEGBU.TECH
   igwegbu.tech = IGWEGBU.TECH
 EOF
+
 # Within the [libdefaults] section, ensure:
 #     default_realm = IGWEGBU.TECH
 
 # initialise the krb5 database and stash the master key:
 sudo kdb5_util create -s -P redhat
-# sudo kdb5_util create -s
+# sudo kdb5_util create -s  # prompts for password
 
 # Start and enable the kerberos server and admin daemons:
 sudo systemctl enable --now krb5-kdc
