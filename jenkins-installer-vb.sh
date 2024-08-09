@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install Jenkins
 
-if ! sudo subscription-manager status 2> /dev/null; then
+if ! sudo subscription-manager status &> /dev/null; then
   echo "Please register this server first with Red Hat."
   echo "Existing..."
   exit 1  # Server not registered
