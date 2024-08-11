@@ -26,8 +26,9 @@ echo "Updating the OS..."
 sudo dnf -y upgrade
 
 echo
-echo "Installing wget..."
-sudo dnf -y install wget
+echo "Installing utilities - wget and git..."
+sudo dnf -y install wget git
+
 
 echo
 echo "Downloading Jenkins repository file..."
