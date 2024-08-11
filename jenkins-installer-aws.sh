@@ -1,11 +1,12 @@
 #!/bin/bash
 # Install Jenkins
 
-if ! sudo subscription-manager status &> /dev/null; then
-  echo "Please register this server first with Red Hat."
-  echo "Existing..."
-  exit 1  # Server not registered
-fi
+# Red Hat Registration not strictly necessary for RHEL on AWS (!)
+# if ! sudo subscription-manager status &> /dev/null; then
+#  echo "Please register this server first with Red Hat."
+#  echo "Existing..."
+#  exit 1  # Server not registered
+# fi
 
 echo "This script installs Jenkins on a fresh RHEL9 server."
 echo "It also creates a user 'jenkins' with sudo privileges."
