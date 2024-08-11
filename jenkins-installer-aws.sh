@@ -76,7 +76,10 @@ echo "Note: You MUST change this upon first login."
 echo "...."
 echo
 echo "Your Jenkins web interface is at:"
-echo "http://$(hostname -I | awk '{print $1}'):$YOURPORT"
+TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-ipv4")
+# echo "http://$(hostname -I | awk '{print $1}'):$YOURPORT"
+echo "$PUBLIC_IP:$YOURPORT"
 echo
 echo "Your initial admin password for the Jenkins Console is:"
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
