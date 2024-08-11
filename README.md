@@ -11,7 +11,7 @@ sure the security groups are correctly set up.
 Scripts targeted for just the Virtual box include -vb in the name.
 Scripts targeted for AWS EC2 have -aws in the name.
 
-Any question, send me an email on igwegbu@gmail.com.
+Any new question, send me an email on igwegbu@gmail.com.
 
 Elias Igwegbu
 July 2024
