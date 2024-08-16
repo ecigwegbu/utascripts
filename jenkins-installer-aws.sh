@@ -4,7 +4,7 @@
 # Red Hat Registration not strictly necessary for RHEL on AWS (!)
 # if ! sudo subscription-manager status &> /dev/null; then
 #  echo "Please register this server first with Red Hat."
-#  echo "Existing..."
+#  echo "Exiting..."
 #  exit 1  # Server not registered
 # fi
 
