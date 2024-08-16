@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# This script installs jenkins using container option on a fresh RHEL 9 VM
-# Pre-requisite: VM registered with Red Hat; user can sudo without password
+# This script installs jenkins using customized Docker container option
+# with Blue Ocean plugin and Docker-in-Docker container on a fresh RHEL 9 VM
+#
+# Pre-requisites: 1) RHEL9 VM registered with Red Hat;
+# and 2) user jenkins can sudo without password
+#
 if ! sudo -n true &> /dev/null; then
   echo "User must have sudo without password."
   echo "Exiting..."
@@ -43,7 +47,8 @@ sudo systemctl status docker | head
 # Add user to docker group for rootless use of docker
 sudo groupadd docker &> /dev/null
 sudo usermod -aG docker jenkins
-newgrp - docker  # refresh group
 
-# Now Run part 2
-echo -e "Part One done\nNow run part2\n"
+# Now logout and login again to Run part 2 (install-jenkins-docker-part2.sh)
+echo -e "Part One done\nNow logout and login again before running part2:\n(install-jenkins-docker-part2.sh)"
+
+newgrp - docker  # refresh group
