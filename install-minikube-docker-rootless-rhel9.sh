@@ -52,6 +52,6 @@ sudo yum install -y kubectl && \
   echo -e "\nKubernetes Cluster Node(s):\n" && \
   kubectl get node -o wide
 echo
-echo                *************** END ****************
+echo '              *************** END ****************'
 echo 'Minikube-Docker-Rootless-RHEL9 Installer (c) 2024. Unix Training Academy.'
 echo 'Enquiries? dm Author: Elias Igwegbu <igwegbu@gmail.com>'
