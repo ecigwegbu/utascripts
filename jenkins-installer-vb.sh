@@ -83,6 +83,6 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 echo "(This is also available from /var/lib/jenkins/secrets/initialAdminPassword)"
 sudo su - jenkins
 echo
-echo                *************** END ****************
+echo '              *************** END ****************'
 echo 'Jenkins Installer (c) 2024. Unix Training Academy. All Rights Reserved'
 echo 'Enquiries? dm Author: Elias Igwegbu <igwegbu@gmail.com>'

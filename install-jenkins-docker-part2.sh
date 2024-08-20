@@ -59,6 +59,6 @@ docker ps
 echo "Initial admin password:"
 docker exec -it jenkins-blueocean cat /var/jenkins_home/secrets/initialAdminPassword
 echo
-echo                *************** END ****************
+echo '            *************** END ****************'
 echo 'Jenkins Container Installer (c) 2024. Unix Training Academy. All Rights Reserved'
 echo 'Enquiries? dm Author: Elias Igwegbu <igwegbu@gmail.com>'
