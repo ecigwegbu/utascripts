@@ -2,6 +2,7 @@
 
 # Install minikube using Docker driver on RHEL 9
 # Requires: Docker installed in rootless mode; sudo user; Red Hat registration
+# Requires at least 2 CPUs and 3 GB RAM
 echo -e "\nThis script installs minikube using Docker-rootless driver on RHEL 9"
 echo -e "\n********** Checking pre-requisites..."
 if ! sudo -n true &> /dev/null; then
@@ -16,6 +17,15 @@ elif ! docker ps &> /dev/null; then
   echo "Please install Docker in rootless mode first"
   echo "Exiting..."
   exit 3  # Docker not installed
+# Check if the system has at least 2 CPUs
+elif [ $(lscpu | grep '^CPU(s):' | awk '{print $2}') -lt 2 ]; then
+  echo "Please allocate at least 2 CPUs for Minikube..."
+  echo "Exiting..."
+  exit 4 # Insufficient CPUs
+elif [ $(free -m | awk '/^Mem:/{print $2}') -lt 3072 ]; then
+  echo "Please allocate at least 3GB RAM for Minikube..."
+  echo "Exiting..."
+  exit 5 # Insufficient RAM
 fi
 
 echo -e "\n********** Downloading Minikube..."

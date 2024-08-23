@@ -2,6 +2,7 @@
 
 # Install minikube using Podman Rootless driver on RHEL 9
 # Requires: User can sudo w/out pwd; Red Hat registration
+# Requires at least 2 CPUs and 3 GB RAM
 echo -e "\nThis script installs minikube using Podman-rootless driver on RHEL 9"
 echo -e "\n********** Checking pre-requisites..."
 if ! sudo -n true &> /dev/null; then
