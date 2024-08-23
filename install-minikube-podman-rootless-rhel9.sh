@@ -19,21 +19,7 @@ elif [ $(lscpu | grep '^CPU(s):' | awk '{print $2}') -lt 2 ]; then
   echo "Exiting..."
   exit 3 # Insufficient CPUs
 elif [ $(free -m | awk '/^Mem:/{print $2}') -lt 3072 ]; then
-  echo "Please allocate at least 3GB RAM for Minikube..."
-  echo "Exiting..."
-  exit 4 # Insufficient RAM
-fi
-
-# Check if the system has at least 2 CPUs
-if [ $(lscpu | grep '^CPU(s):' | awk '{print $2}') -lt 2 ]; then
-  echo "Please allocate at least 2 CPUs and 3GB RAM for Minikube..."
-  echo "Exiting..."
-  exit 3 # Insufficient CPUs
-fi
-
-# Check if the system has at least 3GB of RAM (in kB)
-# The value 3145728 represents 3GB in kB (3 * 1024 * 1024)
-if [ $(free -k | awk '/^Mem:/{print $2}') -lt 3145728 ]; then
+  free -m
   echo "Please allocate at least 3GB RAM for Minikube..."
   echo "Exiting..."
   exit 4 # Insufficient RAM
