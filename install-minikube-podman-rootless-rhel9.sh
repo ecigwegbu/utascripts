@@ -18,7 +18,7 @@ elif [ $(lscpu | grep '^CPU(s):' | awk '{print $2}') -lt 2 ]; then
   echo "Please allocate at least 2 CPUs for Minikube..."
   echo "Exiting..."
   exit 3 # Insufficient CPUs
-elif [ $(free -m | awk '/^Mem:/{print $2}') -lt 3072 ]; then
+elif [ $(free -m | awk '/^Mem:/{print $2}') -lt 2500 ]; then
   free -m
   echo "Please allocate at least 3GB RAM for Minikube..."
   echo "Exiting..."
