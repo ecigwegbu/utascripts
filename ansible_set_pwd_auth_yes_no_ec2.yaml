@@ -1,0 +1,35 @@
+- name: Set password authentication yes/no in SSH (for AWS Hosts)
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    dest_paths:  # handle config in both the main sshd_config file and the .d dir
+      - /etc/ssh/sshd_config
+      - /etc/ssh/sshd_config.d/50-cloud-init.conf
+
+    # Specify the desired state for the PasswordAuthentication attribute;
+    # 'yes' - enable; 'no' = disable; quotes '' required;
+    # can override on command line with -e PasswordAuthentication=<yes/no>
+    PasswordAuthentication: 'no'
+
+  tasks:
+    - name: Set PasswordAuthentication attribute
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '^#?PasswordAuthentication .*$'
+        replace: "PasswordAuthentication {{ PasswordAuthentication }}"
+        backup: yes
+      loop:  "{{ dest_paths }}"
+      when: "'ec2' in ansible_facts.machine_id"
+      notify:
+        - Restart SSH
+
+    - name: Debug AWS machine ID
+      debug:
+        var: ansible_facts['machine_id']
+
+  handlers:
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
